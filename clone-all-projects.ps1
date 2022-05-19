@@ -1,6 +1,6 @@
-$path = "";
+$path = "C:\dev\github\mcb";
 $clearPath = $false;
-$gitBasePath = "";
+$gitBasePath = "https://github.com/MarceloCas";
 
 $initialPath = Get-Location;
 
@@ -13,6 +13,15 @@ for ($i = 0; $i -lt $args.Count; $i++) {
         $clearPath = $true;
     } elseif(($arg -eq "-gp") -or ($arg -eq "--gitpath")) {
         $gitBasePath = $args[$i + 1];
+    } elseif(($arg -eq "-h") -or ($arg -eq "--help")) {
+        Write-Host ".\clone-all-projects.ps1 [OPTIONS]";
+        Write-Host "";
+        Write-Host "OPTIONS";
+        Write-Host "-p, --path --> base path to clone. Default: C:\dev\github\mcb";
+        Write-Host "-cp, --clearpath --> clear all files include subfolders in base path. Default: false";
+        Write-Host "-gp, --gitpath --> git base path. Default: https://github.com/MarceloCas";
+
+        return;
     }
 }
 
@@ -71,6 +80,9 @@ foreach ($repositoryName in $repositoryNameCollection) {
 
     # clone repository
     git clone $gitPath;
+
+    # trust repository directory
+    git config --global --add safe.directory $repositoryPath;
 
     # build if has .sln file
     if(Test-Path -Path $repositoryPath\*.sln -PathType Leaf){
