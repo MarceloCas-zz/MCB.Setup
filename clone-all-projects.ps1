@@ -40,6 +40,7 @@ $repositoryNameCollection = @(
     "MCB.Demos.ShopDemo",
     # Others
     "MCB.Tests",
+    "MCB.Environment",
     "Docs",
     #Demos 
     "Benchmarks"
