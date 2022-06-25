@@ -27,8 +27,8 @@ for ($i = 0; $i -lt $args.Count; $i++) {
 
 $repositoryCollection = @(
     # Core
-    ("MCB.Core.Infra.CrossCutting.DesignPatterns.Validator.Abstractions", "Core.Infra.CC.DP.Validator.Abs"),
-    ("MCB.Core.Infra.CrossCutting.DesignPatterns.Validator", "Core.Infra.CC.DP.Validator"),
+    ("MCB.Core.Infra.CrossCutting.DesignPatterns.Validator.Abstractions", "Core.Infra.CC.DP.Val.Abs"),
+    ("MCB.Core.Infra.CrossCutting.DesignPatterns.Validator", "Core.Infra.CC.DP.Val"),
     ("MCB.Core.Infra.CrossCutting.DesignPatterns.Abstractions", "Core.Infra.CC.DP.Abs"),
     ("MCB.Core.Infra.CrossCutting.DesignPatterns", "Core.Infra.CC.DP"),
     ("MCB.Core.Infra.CrossCutting", "Core.Infra.CC"),
@@ -83,7 +83,7 @@ foreach ($repository in $repositoryCollection) {
     }
 
     # clone repository
-    git clone $gitPath;
+    git clone $gitPath $repositoryPath;
 
     # trust repository directory
     #git config --global --add safe.directory $repositoryPath;
