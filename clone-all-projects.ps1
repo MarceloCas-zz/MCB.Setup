@@ -1,4 +1,4 @@
-$path = "C:\dev\github\mcb";
+$path = "C:\mcb\github\MarceloCas";
 $clearPath = $false;
 $gitBasePath = "https://github.com/MarceloCas";
 
@@ -17,46 +17,46 @@ for ($i = 0; $i -lt $args.Count; $i++) {
         Write-Host ".\clone-all-projects.ps1 [OPTIONS]";
         Write-Host "";
         Write-Host "OPTIONS";
-        Write-Host "-p, --path --> base path to clone. Default: C:\dev\github\mcb";
-        Write-Host "-cp, --clearpath --> clear all files include subfolders in base path. Default: false";
-        Write-Host "-gp, --gitpath --> git base path. Default: https://github.com/MarceloCas";
+        Write-Host "-p, --path --> base path to clone. Default: $path";
+        Write-Host "-cp, --clearpath --> clear all files include subfolders in base path. Default: $clearPath";
+        Write-Host "-gp, --gitpath --> git base path. Default: $gitBasePath";
 
         return;
     }
 }
 
-$repositoryNameCollection = @(
+$repositoryCollection = @(
     # Core
-    "MCB.Core.Infra.CrossCutting.DesignPatterns.Validator.Abstractions",
-    "MCB.Core.Infra.CrossCutting.DesignPatterns.Abstractions",
-    "MCB.Core.Domain.Entities.Abstractions",
-    "MCB.Core.Infra.CrossCutting.DesignPatterns.Abstractions",
-    "MCB.Core.Infra.CrossCutting",
-    "MCB.Core.Domain.Abstractions",
-    "MCB.Core.Infra.CrossCutting.DesignPatterns",
-    "MCB.Core.Domain.Entities",
-    "MCB.Core.Domain",
+    ("MCB.Core.Infra.CrossCutting.DesignPatterns.Validator.Abstractions", "Core.Infra.CC.DP.Validator.Abs"),
+    ("MCB.Core.Infra.CrossCutting.DesignPatterns.Validator", "Core.Infra.CC.DP.Validator"),
+    ("MCB.Core.Infra.CrossCutting.DesignPatterns.Abstractions", "Core.Infra.CC.DP.Abs"),
+    ("MCB.Core.Infra.CrossCutting.DesignPatterns", "Core.Infra.CC.DP"),
+    ("MCB.Core.Infra.CrossCutting", "Core.Infra.CC"),
+    ("MCB.Core.Domain.Entities.Abstractions", "Core.Domain.Entities.Abs"),
+    ("MCB.Core.Domain.Entities", "Core.Domain.Entities"),
+    ("MCB.Core.Domain.Abstractions", "Core.Domain.Abs"),
+    ("MCB.Core.Domain", "Core.Domain"),
+    # Test
+    ("MCB.Tests", "Tests"),
     # Demos
-    "MCB.Demos.ShopDemo",
+    ("MCB.Demos.ShopDemo", "Demos.ShopDemo"),
     # Others
-    "MCB.Tests",
-    "MCB.Environment",
-    "Docs",
-    #Demos 
-    "Benchmarks"
+    ("Docs", "Docs"),
+    ("MCB.Environment", "Environment"),
+    ("Benchmarks", "Benchmarks")
 );
 
 # enable windows long path
-if($IsWindows){
-    New-ItemProperty `
-    -Path "HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem" `
-    -Name "LongPathsEnabled" `
-    -Value 1 `
-    -PropertyType DWORD `
-    -Force;
+# if($IsWindows){
+#     New-ItemProperty `
+#     -Path "HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem" `
+#     -Name "LongPathsEnabled" `
+#     -Value 1 `
+#     -PropertyType DWORD `
+#     -Force;
 
-    git config --system core.longpaths true;
-}
+#     git config --system core.longpaths true;
+# }
 
 # create base path if not exists
 if((Test-Path -Path $path) -eq $false){
@@ -66,9 +66,12 @@ if((Test-Path -Path $path) -eq $false){
 Set-Location $path;
 
 # clone directories
-foreach ($repositoryName in $repositoryNameCollection) {
+foreach ($repository in $repositoryCollection) {
+
+    $repositoryName = $repository[0];
+
     $gitPath = "$gitBasePath/$repositoryName";
-    $repositoryPath = Join-Path -Path $path -ChildPath $repositoryName;
+    $repositoryPath = Join-Path -Path $path -ChildPath $repository[1];;
     
     # clear or bypass to next repository if exists
     if(Test-Path -Path $repositoryPath){
@@ -83,7 +86,7 @@ foreach ($repositoryName in $repositoryNameCollection) {
     git clone $gitPath;
 
     # trust repository directory
-    git config --global --add safe.directory $repositoryPath;
+    #git config --global --add safe.directory $repositoryPath;
 
     # build if has .sln file
     if(Test-Path -Path $repositoryPath\*.sln -PathType Leaf){
